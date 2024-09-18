@@ -217,3 +217,52 @@ kubectl delete -f nginx-local.yaml
 ```
 
 By following these steps, you can use your local Docker registry in your Kubernetes Pod definition, allowing you to deploy images from the local registry to your Kubernetes cluster.
+
+
+## Persist Docker Registry
+
+Yes, Docker Registry 2 can be configured to persist data by setting up **persistent storage** for the image layers and metadata. Here's how you can achieve that:
+
+### 1. **Using File System for Persistence**
+   - You can configure Docker Registry 2 to store images and data on a local file system.
+   - In the registry's configuration file (`config.yml`), specify the path where you want the registry to store data.
+
+   Example configuration (`config.yml`):
+   ```yaml
+   version: 0.1
+   storage:
+     filesystem:
+       rootdirectory: /var/lib/registry
+   ```
+
+   When you run the Docker Registry, all images and metadata will be stored in `/var/lib/registry` or whichever directory you specify.
+
+### 2. **Using External Storage (S3, GCS, Azure Blob, etc.)**
+   Docker Registry 2 can also store images on **cloud storage** such as Amazon S3, Google Cloud Storage (GCS), or Azure Blob Storage.
+
+   Example S3 configuration (`config.yml`):
+   ```yaml
+   version: 0.1
+   storage:
+     s3:
+       accesskey: your-access-key
+       secretkey: your-secret-key
+       region: your-region
+       bucket: your-bucket-name
+   ```
+
+   This ensures that all your Docker images are persisted in your S3 bucket, making the registry more durable and scalable.
+
+### 3. **Using Docker Volumes**
+   - When running the Docker Registry container, you can use Docker volumes to persist the data:
+     ```bash
+     docker run -d -p 5000:5000 --name registry \
+     -v /path/to/persistent/data:/var/lib/registry \
+     registry:2
+     ```
+   - This will mount your local directory to the container, ensuring that data is persisted even if the container is removed.
+
+### 4. **Using Kubernetes (Persistent Volume Claims)**
+   - If running Docker Registry in Kubernetes, you can use Persistent Volume Claims (PVC) to store the registry data persistently.
+
+By setting up persistent storage, Docker Registry 2 will store images and metadata reliably, allowing for safe restarts and scalability.
