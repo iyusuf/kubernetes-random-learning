@@ -1,0 +1,22 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.fastapiBackend.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.fastapiBackend.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.fastapiBackend.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.fastapiBackend.name }}
+    spec:
+      containers:
+      - name: {{ .Values.fastapiBackend.containerName }}
+        image: {{ .Values.fastapiBackend.image.repository }}:{{ .Values.fastapiBackend.image.tag }}
+        imagePullPolicy: {{ .Values.fastapiBackend.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.fastapiBackend.containerPort }}

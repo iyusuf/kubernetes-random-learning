@@ -1,0 +1,50 @@
+namespace: tinyweb3tier
+
+serviceAccount: default
+
+#  Postgres Database
+pgDb:
+  name: pg-db
+  containerName: pg-db
+  replicas: 1
+  containerPort: 5432
+  image:
+    repository: iyusuf/dbserver
+    tag: latest
+  serviceName: pg-db-service
+  servicePort: 5432
+  env:
+    POSTGRES_USER: "myuser"
+    POSTGRES_PASSWORD: "mypassword"
+    POSTGRES_DB: "mydatabase"
+
+# Backend
+fastapiBackend:
+  name: fastapi-backend
+  containerName: fastapi-backend
+  replicas: 1
+  containerPort: 8000
+  image:
+    repository: iyusuf/fastapi-backend
+    tag: latest
+    pullPolicy: Always
+  serviceName: fastapi-backend-service
+  servicePort: 8000
+
+# Frontend
+webServer:
+  name: js-frontend
+  containerName: js-frontend
+  replicas: 1
+  containerPort: 80
+  image:
+    repository: iyusuf/js-frontend
+    tag: v2
+    pullPolicy: Always
+  serviceName: js-frontend
+  servicePort: 8080
+
+# Ingress
+ingress:
+  name: app-ingress
+
